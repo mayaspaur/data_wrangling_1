@@ -28,3 +28,19 @@ pups_data = read_csv(file = "./data_import_examples/FAS_pups.csv")
 pups_data = janitor::clean_names(pups_data)
 
 ```
+
+#Read in Excel data
+```{r}
+
+library(readxl)
+mlb11_data = read_excel("./data_import_examples/mlb11.xlsx")
+
+```
+
+#Read in SAS
+```{r}
+library(haven)
+pulse_data = read_sas("./data_import_examples/public_pulse_data.sas7bdat")
+head(pulse_data, 5)
+
+```
