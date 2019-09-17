@@ -22,4 +22,9 @@ litters_data
   
 ```
 
+# Load in pups data
+```{r}
+pups_data = read_csv(file = "./data_import_examples/FAS_pups.csv")
+pups_data = janitor::clean_names(pups_data)
 
+```
