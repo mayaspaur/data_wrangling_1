@@ -1,12 +1,25 @@
 ---
-title: "Untitled"
+title: "Data Import"
 author: "Maya Spaur"
 date: "9/17/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 
 ```
+
+# Load in a dataset
+```{r}
+##reads in a dataset using absolute path or relative path (always use a relative path!)
+
+litters_data = read_csv(file = "./data_import_examples/FAS_litters.csv")
+
+litters_data = janitor::clean_names(litters_data)
+
+litters_data
+  
+```
+
 
