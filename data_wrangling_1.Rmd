@@ -16,31 +16,37 @@ library(tidyverse)
 
 litters_data = read_csv(file = "./data_import_examples/FAS_litters.csv")
 
-litters_data = janitor::clean_names(litters_data)
+pups_data = read_csv(file = "./data_import_examples/FAS_pups.csv")
 
 litters_data
-  
-```
 
-# Load in pups data
-```{r}
-pups_data = read_csv(file = "./data_import_examples/FAS_pups.csv")
+pups_data
+
+litters_data = janitor::clean_names(litters_data)
+
 pups_data = janitor::clean_names(pups_data)
 
+
+
 ```
 
-#Read in Excel data
+# Selecting
+
+Select data frame, and then the columns you want.
 ```{r}
+select(litters_data, group, litter_number)
 
-library(readxl)
-mlb11_data = read_excel("./data_import_examples/mlb11.xlsx")
+select(litters_data, group, litter_number, gd0_weight)
+
+select(litters_data, group, litter_number, starts_with("pups"))
+
+select(litters_data, litter_number, group, everything())
+
+select(litters_data, -group)
+
+select(litters_data, litter_number, gd0_weight:pups_born_alive)
+   
 
 ```
 
-#Read in SAS
-```{r}
-library(haven)
-pulse_data = read_sas("./data_import_examples/public_pulse_data.sas7bdat")
-head(pulse_data, 5)
 
-```
