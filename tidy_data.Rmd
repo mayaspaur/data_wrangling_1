@@ -7,21 +7,92 @@ output: html_document
 
 ```{r setup, include=FALSE}
 
-install.packages("tidyr")
+library(tidyverse)
 ```
 
 
-
-```{r cars}
-summary(cars)
+##Wide to long
+```{r}
+pulse_data =
+  haven::read_sas("./data_import_examples/public_pulse_data.sas7bdat") %>%
+  janitor::clean_names()
+pulse_data=
+    pivot_longer(
+    pulse_data, 
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit", 
+     names_prefix = "bdi_score_",
+    values_to = "bdi")
+pulse_data
 ```
 
-## Including Plots
+##separate in litters
+```{r}
+litters_data = 
+  read_csv("./data_import_examples/FAS_litters.csv")%>%
+  janitor::clean_names() %>%
+  separate(group, into = c("dose", "day_of_tx"), sep = 3)
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+litters_data
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+##bind rows
+```{r}
+fellowship_data = 
+  readxl:: read_excel("./data_import_examples/LotR_Words.xlsx", range = "B3:D6") %>%
+  mutate(movie = "fellowship")
+
+two_towers = 
+  readxl::read_excel("./data_import_examples/LotR_Words.xlsx", range = "F3:H6") %>%
+  mutate(movie = "two_towers")
+
+return_king = 
+  readxl::read_excel("./data_import_examples/LotR_Words.xlsx", range = "J3:L6") %>%
+  mutate(movie = "return_king")
+
+lotr_data = 
+  bind_rows(fellowship_data, two_towers, return_king) %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    female:male,
+    names_to = "sex",
+    values_to = "words"
+  ) %>%
+  select(movie, race, sex, words)
+```
+
+```{r}
+analysis_result = tibble(
+  group = c("treatment", "treatment", "placebo", "placebo"),
+  time = c("pre", "post", "pre", "post"),
+  mean = c(4, 8, 3.5, 4)
+)
+analysis_result
+pivot_wider(
+  analysis_result,
+  names_from = time,
+  values_from = mean
+)
+```
+
+#Joining datasets
+```{r}
+litters_data = 
+  read_csv(file = "./data_import_examples/FAS_litters.csv") %>%
+  janitor::clean_names() %>%
+  select(-pups_survive) %>%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group))
+
+
+pups_data = 
+  read_csv("./data_import_examples/FAS_pups.csv") %>%
+  janitor::clean_names() %>%
+  mutate(sex = recode(sex, `1` = "male", `2` = "female")) 
+
+fas_data = 
+  left_join(pups_data, litters_data, by = "litter_number")
+fas_data
+
+```
